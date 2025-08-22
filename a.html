@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zenith – Portfolio (Horizontal)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f17; --text:#e5ecff; --muted:#aab8d6; --card:rgba(255,255,255,.04); --card-bd:rgba(255,255,255,.12);
+    --brand1:#7c6cff; --brand2:#00d4ff; --brand3:#ff6a3d;
+  }
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--text); }
+  a{color:inherit}
+  /* Horizontal pages */
+  .hpages { display:flex; height:100vh; width:400vw; transition: transform 1s cubic-bezier(.25,1,.3,1); }
+  .page { flex: 0 0 100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  h1 { font-size:clamp(28px,4.5vw,56px); margin:0 0 .6rem; letter-spacing:-.02em; background: conic-gradient(from 180deg, var(--brand1), var(--brand2), var(--brand3), var(--brand1)); background-size:200% 200%; color:transparent; -webkit-background-clip:text; background-clip:text; animation:hueShift 8s ease-in-out infinite alternate; }
+  @keyframes hueShift { to { background-position: 100% 0; } }
+  .lead { color:#d0d7e2; max-width:70ch; margin:0 auto 1rem; font-size:clamp(14px,2vw,18px); }
+  .chip { display:inline-flex; align-items:center; gap:8px; padding:.45rem .8rem; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); font-weight:600; }
+  .btn { background:white; color:black; padding:0.6rem 1rem; margin:0.5rem; border-radius:12px; text-decoration:none; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,.3); transition: transform .3s ease, box-shadow .3s ease; position:relative; overflow:hidden; }
+  .btn::before { content:""; position:absolute; inset:-2px; border-radius:inherit; background:conic-gradient(from 0deg, var(--brand1), var(--brand2), var(--brand3), var(--brand1)); filter:blur(8px); opacity:0; transition:opacity .4s; z-index:-1; }
+  .btn:hover::before { opacity:.8; }
+  .btn:hover { transform:translateY(-4px) scale(1.05); box-shadow:0 15px 35px rgba(0,0,0,.5); }
+
+  /* Hero banner */
+  .banner { position:absolute; inset:0; overflow:hidden;}
+  .img-cover { width:100%; height:100%; object-fit:cover; transform:scale(1.08); animation:kenburns 20s ease-in-out infinite; filter:saturate(1.05); }
+  @keyframes kenburns { 0% { transform:scale(1.08) translate(0,0);} 50% { transform:scale(1.13) translate(-2%,-2%);} 100% { transform:scale(1.08) translate(0,0);} }
+    .vignette::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, transparent 58%, rgba(0,0,0,.65) 100%);
+        pointer-events: none;
+    }
+  .overlay { position:relative; z-index:2; text-align:center; padding: 0 6vw; }
+  .avatar{ width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,.85); box-shadow:0 10px 50px rgba(0,0,0,.5); }
+
+  /* Cards */
+  .cards-wrap{ width:min(1200px,92vw); margin:auto; }
+  .cards-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
+  .card{ border-radius:18px; overflow:hidden; background:var(--card); border:1px solid var(--card-bd); position:relative; transition:transform .6s ease, box-shadow .6s ease; }
+  .card img{ width:100%; height:200px; object-fit:cover; display:block; transition:transform 1s ease; }
+  .card:hover img{ transform:scale(1.075); }
+  .card::after { content:""; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent); transform:rotate(25deg); opacity:0; transition:opacity .5s; }
+  .card:hover::after { opacity:1; animation:shine 1s ease; }
+  @keyframes shine { to { transform:translateX(100%) rotate(25deg); } }
+  .card:hover { transform:translateY(-8px); box-shadow:0 30px 80px rgba(0,0,0,.55); }
+  .card .content{ padding:16px }
+  .meta{ color:#9fb0c8; font-size:13px }
+
+  /* About grid */
+  .about-grid{ width:min(1100px,90vw); display:grid; grid-template-columns: 260px 1fr; gap:28px; align-items:center; }
+  .about-box{ background:var(--card); border:1px solid var(--card-bd); border-radius:16px; padding:18px; }
+  .skills{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+
+  /* Gallery */
+  .grid-hero{ display:grid; grid-template-columns:1.2fr .8fr; grid-template-rows:1fr 1fr; gap:18px; width:min(1200px,92vw); margin:0 auto; }
+  .grid-hero figure{ margin:0; position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--card-bd); transition:transform 1s ease; }
+  .grid-hero img{ width:100%; height:100%; object-fit:cover; transition:transform 1s ease; }
+  .grid-hero figure:hover img{ transform:scale(1.05); }
+  .grid-hero figcaption{ position:absolute; left:12px; bottom:10px; padding:6px 10px; border-radius:999px; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.18); }
+  .top-left{ grid-row:1 / span 2; }
+  .caption{ margin:.6rem 0 1rem; color:#c9d3e4; text-align:center; }
+
+  /* UI helpers */
+  .progress{position:fixed;top:0;left:0;width:100%;height:3px;background:rgba(255,255,255,.08);z-index:10}
+  .progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand1),var(--brand2),var(--brand3))}
+  .dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:10}
+  .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.4);cursor:pointer;transition:transform .2s,background .2s}
+  .dot.active{background:#fff;transform:scale(1.25)}
+    .scroll-hint {
+        position: fixed; /* thay vì absolute */
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        opacity: .85;
+        font-size: 13px;
+        color: #cbd5e1;
+        letter-spacing: .3px;
+        z-index: 20; /* cao hơn .progress/.dots (z=10) và .overlay (z=2) */
+        pointer-events: none; /* không chặn click vào nút/link */
+    }
+  .scroll-hint::after{content:"▼";display:block;text-align:center;animation:bounce 1.4s ease-in-out infinite}
+  @keyframes bounce{50%{transform:translateY(4px)}}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+    /* layout hàng cho skills */
+    .skills-sections {
+        display: grid;
+        gap: 16px; /* khoảng cách giữa các hàng */
+    }
+    /* Hand cursor cho phần tử có thể bấm */
+    a, .btn, .dot, .skills .chip {
+        cursor: pointer;
+    }
+    .skill-row h4 {
+        margin: 0 0 8px;
+        font-size: 12px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    /* chips có sẵn, bổ sung hover xanh biển */
+    .chip {
+        transition: background .25s ease, box-shadow .25s ease, border-color .25s ease, color .25s ease, transform .15s ease;
+    }
+
+        .chip:hover {
+            background: rgba(0, 212, 255, .12); /* xanh biển nhạt */
+            border-color: var(--brand2); /* --brand2 đã là xanh biển */
+            box-shadow: 0 0 0 1px var(--brand2) inset, 0 8px 24px rgba(0,212,255,.15);
+            color: #e6f9ff;
+            transform: translateY(-1px);
+        }
+
+    /* responsive nhẹ: co giãn chip tốt hơn */
+    .skills {
+        gap: 10px;
+    }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+    <div class="scroll-hint">Drag down (or ← →) to slide horizontally</div>
+
+    <div class="hpages" id="hpages">
+
+        <!-- PAGE 1: HERO / INTRO -->
+        <section class="page hero">
+            <div class="banner vignette" aria-hidden="true">
+                <!-- TODO: thay ảnh nền hero của bạn -->
+                <img class="img-cover" src="https://i.pinimg.com/originals/88/15/63/881563d6444b370fa4ceea0c3183bb4c.gif?q=80&w=1920&auto=format&fit=crop" alt="" />
+            </div>
+            <div class="overlay reveal">
+                <img class="avatar" src="https://i.postimg.cc/wjqs3LPv/z6922506126890-bdfb8a4fd8d661068a09a86add20ce38.jpg?q=80&w=400&auto=format&fit=crop" alt="Ảnh đại diện" />
+                <div style="height:10px"></div>
+                <div class="chip" id="role">.NET / Backend Developer</div>
+                <h1 id="name">Zenith Hawking • Thanh Hai</h1>
+                <p class="lead" id="tagline">Love new technology, microservices, real‑time and performance and security. I build lightweight, scalable and beautiful applications.</p>
+                <div class="cta">
+                    <a class="btn" id="btnCV" href="./assets/CV-Zenith-Tran-Thanh-Hai.pdf" download>📄 Tải CV</a>
+                    <a class="btn" id="btnContact" href="#contact">✉️ Liên hệ</a>
+                    <a class="btn" id="btnLinkedIn" href="https://www.linkedin.com/in/zenith-hawking-hai" target="_blank" rel="noopener">LinkedIn</a>
+                    <a class="btn" id="btnFacebook" href="https://www.facebook.com/thanh.hai.13377" target="_blank" rel="noopener">Facebook</a>
+                    <a class="btn" href="https://github.com/ThanhHai133" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: ABOUT & SKILLS -->
+        <section class="page about">
+            <div class="overlay reveal">
+                <h1>About Me</h1>
+                <p class="caption">A little about me and my key skills.</p>
+            </div>
+            <div class="about-grid reveal">
+                <div class="about-box">
+                    <h3>Brief Introduction</h3>
+                    <p id="aboutText">
+                        I'm a .NET Core/.NET Framewrok/.ASP.NET/ Backend
+                        I have experience working with MVC, API, Websocket, clean architecture,
+                        database management and optimization.
+                    </p>
+                </div>
+                <div class="about-box">
+                    <h3>My Skills</h3>
+
+                    <div class="skills-sections">
+                        <!-- 1) Languages -->
+                        <div class="skill-row">
+                            <h4>Languages</h4>
+                            <div class="skills">
+                                <span class="chip">C#</span>
+                                <span class="chip">HTML</span>
+                                <span class="chip">CSS</span>
+                                <span class="chip">JavaScript</span>
+                                <span class="chip">PHP</span>
+                                <span class="chip">SQL</span>
+                            </div>
+                        </div>
+
+                        <!-- 2) Frameworks / Libraries -->
+                        <div class="skill-row">
+                            <h4>Frameworks & Libraries</h4>
+                            <div class="skills">
+                                <span class="chip">ASP.NET Core</span>
+                                <span class="chip">ASP.NET Framework</span>
+                                <span class="chip">Blazor</span>
+                                <span class="chip">Next.js</span>
+                                <span class="chip">Vue</span>
+                                <span class="chip">WinForms</span>
+                                <span class="chip">WPF</span>
+                            </div>
+                        </div>
+
+                        <!-- 3) Architecture / Patterns -->
+                        <div class="skill-row">
+                            <h4>Architecture & Patterns</h4>
+                            <div class="skills">
+                                <span class="chip">Clean Architecture</span>
+                                <span class="chip">Microservices</span>
+                                <span class="chip">MVC</span>
+                                <span class="chip">REST APIs</span>
+                                <span class="chip">WebSocket</span>
+                            </div>
+                        </div>
+
+                        <!-- 4) DevOps / Cloud -->
+                        <div class="skill-row">
+                            <h4>DevOps & Cloud</h4>
+                            <div class="skills">
+                                <span class="chip">Git / GitHub</span>
+                                <span class="chip">Docker</span>
+                                <span class="chip">Azure</span>
+                                <span class="chip">SQL Server</span>
+                                <span class="chip">MySQL</span>
+                                <span class="chip">MongoDB</span>
+                                <span class="chip">Firebase</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- PAGE 3: PROJECTS -->
+        <section class="page projects">
+            <div class="overlay reveal">
+                <h1>A little Best projects</h1>
+                <p class="caption">Here are some projects I have done.</p>
+            </div>
+            <div class="cards-wrap reveal">
+                <div class="cards-grid" id="projectGrid">
+                    <!-- Project Card 1 -->
+                    <article class="card">
+                        <img src="https://cdn.dribbble.com/userupload/42321862/file/original-a75bcf8387ba743f4755ed3022ae2c84.gif?q=80&w=1400&auto=format&fit=crop" alt="WebToFile" />
+                        <div class="content">
+                            <h3>Carz / Web sale old car</h3>
+                            <div class="meta">.NET Core • API • MonggoDB • Reddit • RabbitMQ • Github • Docker</div>
+                        </div>
+                    </article>
+                    <!-- Project Card 2 -->
+                    <article class="card">
+                        <img src="https://i.pinimg.com/originals/8b/04/c9/8b04c9405a307df013312b2057e791fe.gif?q=80&w=1400&auto=format&fit=crop" alt="Haravan Integration" />
+                        <div class="content">
+                            <h3>personnel management</h3>
+                            <div class="meta">NET Core • ASP.Net • SQL • Entity Framework • Identity • Git</div>
+                        </div>
+                    </article>
+                    <!-- Project Card 3 -->
+                    <article class="card">
+                        <img src="https://clevertap.com/wp-content/uploads/2018/11/voice-command-app-Incontent-2.gif?q=80&w=1400&auto=format&fit=crop" alt="Real-time Translator" />
+                        <div class="content">
+                            <h3>Realtime Speech Translate</h3>
+                            <div class="meta">WPF + Azure Speech + WebView2 → dịch realtime mượt</div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: CONTACT -->
+        <!--<section class="page contact" id="contact">
+            <div class="overlay reveal">
+                <h1>Liên hệ</h1>
+                <p class="lead">Mở cho cơ hội hợp tác/freelance. Rất vui nếu được kết nối!</p>
+                <div class="cta">
+                    <a class="btn" href="mailto:you@example.com">✉️ you@example.com</a>
+                    <a class="btn" href="tel:+840123456789">📞 +84 012 345 6789</a>
+                    <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+                    <a class="btn" href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
+                </div>
+            </div>
+            <div class="grid-hero reveal" style="margin-top:18px">
+                <figure class="top-left">
+                    <img src="https://images.unsplash.com/photo-1551281044-8ed3e1f46460?q=80&w=1400&auto=format&fit=crop" alt="Làm việc" />
+                    <figcaption>Làm việc</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1544829728-e5cb9eed9441?q=80&w=1400&auto=format&fit=crop" alt="Công cụ" />
+                    <figcaption>Công cụ</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1400&auto=format&fit=crop" alt="Hợp tác" />
+                    <figcaption>Hợp tác</figcaption>
+                </figure>
+            </div>
+        </section>-->
+    </div>
+
+    <!-- Progress & page dots -->
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+    <div class="dots" role="tablist" aria-label="Trang">
+        <button class="dot active" data-i="0" aria-label="Trang 1"></button>
+        <button class="dot" data-i="1" aria-label="Trang 2"></button>
+        <button class="dot" data-i="2" aria-label="Trang 3"></button>
+        <!--<button class="dot" data-i="3" aria-label="Trang 4"></button>-->
+    </div>
+
+    <script>
+        (function () {
+            const container = document.getElementById('hpages');
+            const pages = Array.from(container.querySelectorAll('.page'));
+            let currentPage = 0;
+
+            function go(idx) {
+                if (idx < 0) idx = 0;
+                if (idx >= pages.length) idx = pages.length - 1;
+                if (idx === currentPage) return;
+                currentPage = idx;
+                container.style.transform = `translateX(-${idx * 100}vw)`;
+                updateUI();
+            }
+
+            // Wheel paging (đừng chặn khi lăn nhẹ)
+            let wheelLock = false; const COOLDOWN = 450, THRESH = 8;
+            function normDeltaY(e) {
+                if ('deltaY' in e) { const unit = (e.deltaMode === 1) ? 16 : (e.deltaMode === 2) ? innerHeight : 1; return e.deltaY * unit; }
+                if ('wheelDelta' in e) return -e.wheelDelta;
+                if ('detail' in e) return e.detail * 16;
+                return 0;
+            }
+            function onWheel(e) {
+                if (e.shiftKey || e.ctrlKey) return;
+                // Đừng cản khi trỏ vào element tương tác
+                if (e.target.closest('a, button, input, textarea, select, label')) return;
+                const dy = normDeltaY(e);
+                if (Math.abs(dy) < THRESH) return;
+                e.preventDefault();
+                if (wheelLock) return;
+                wheelLock = true;
+                go(currentPage + (dy > 0 ? 1 : -1));
+                setTimeout(() => wheelLock = false, COOLDOWN);
+            }
+            [['wheel', onWheel, { passive: false }],
+            ['mousewheel', onWheel, { passive: false }],
+            ['DOMMouseScroll', onWheel, { passive: false }]]
+                .forEach(([n, h, o]) => { window.addEventListener(n, h, o); container.addEventListener(n, h, o); });
+
+            // Keyboard
+            window.addEventListener('keydown', e => {
+                if (['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.key)) { e.preventDefault(); go(currentPage + 1); }
+                if (['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); go(currentPage - 1); }
+            });
+
+            // Swipe/drag (mouse & touch) — KHÔNG chặn click
+            let dragging = false, sx = 0, activePointerId = null, captured = false;
+            const THRESH_SWIPE = window.innerWidth * 0.12;   // kéo đủ xa mới lật trang
+            const THRESH_CAPTURE = 10;                       // kéo >10px mới capture
+
+            container.addEventListener('pointerdown', e => {
+                if (e.button !== 0) return; // chỉ chuột trái
+                if (e.target.closest('a, button, input, textarea, select, label')) return; // đừng đụng element tương tác
+                dragging = true; sx = e.clientX; activePointerId = e.pointerId; captured = false;
+            });
+
+            container.addEventListener('pointermove', e => {
+                if (!dragging || e.pointerId !== activePointerId || captured) return;
+                const dx = Math.abs(e.clientX - sx);
+                if (dx > THRESH_CAPTURE) {
+                    container.setPointerCapture(e.pointerId); // giờ mới capture vì người dùng kéo thật
+                    captured = true;
+                }
+            });
+
+            container.addEventListener('pointerup', e => {
+                if (!dragging || e.pointerId !== activePointerId) return;
+                const dx = e.clientX - sx;
+                dragging = false; activePointerId = null; captured = false;
+                if (Math.abs(dx) > THRESH_SWIPE) {
+                    go(currentPage + (dx < 0 ? 1 : -1));
+                }
+                // nếu không đủ ngưỡng, coi như click bình thường
+            });
+
+            container.addEventListener('pointercancel', () => {
+                dragging = false; activePointerId = null; captured = false;
+            });
+
+            // Progress + dots + reveal
+            const bar = document.getElementById('bar');
+            const dots = Array.from(document.querySelectorAll('.dot'));
+            dots.forEach(d => d.addEventListener('click', () => { go(Number(d.dataset.i)); }));
+
+            function updateUI() {
+                if (bar) bar.style.width = (currentPage / (pages.length - 1)) * 100 + '%';
+                dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+                pages.forEach((p, i) => {
+                    const on = i === currentPage;
+                    p.querySelectorAll('.reveal').forEach(el => el.classList.toggle('in', on));
+                });
+            }
+
+            // Điều hướng hash (#contact) sang đúng trang
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', e => {
+                    const id = a.getAttribute('href').slice(1);
+                    const i = pages.findIndex(p => p.id === id);
+                    if (i >= 0) { e.preventDefault(); go(i); }
+                });
+            });
+
+            updateUI(); // initial
+        })();
+    </script>
+
+</body>
+</html>
