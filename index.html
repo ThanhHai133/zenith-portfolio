@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
   :root{
     --bg:#0b0f17; --text:#e5ecff; --muted:#aab8d6; --card:rgba(255,255,255,.04); --card-bd:rgba(255,255,255,.12);
     --brand1:#7c6cff; --brand2:#00d4ff; --brand3:#ff6a3d;
@@ -15,8 +19,27 @@
   html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--text); }
   a{color:inherit}
   /* Horizontal pages */
-  .hpages { display:flex; height:100vh; width:400vw; transition: transform 1s cubic-bezier(.25,1,.3,1); }
-  .page { flex: 0 0 100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .hpages {
+        display: flex;
+        height: 100dvh; /* dùng dvh cho mobile ổn định */
+        transition: transform 1s cubic-bezier(.25,1,.3,1);
+        touch-action: pan-y; /* cho phép mình xử lý gesture ngang */
+        cursor: grab;
+    }
+        .hpages.is-dragging {
+            cursor: grabbing;
+        }
+    .page {
+        flex: 0 0 100%;
+        min-width: 100%;
+        height: 100dvh; /* hoặc 100svh nếu muốn chắc chắn trên iOS */
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
   h1 { font-size:clamp(28px,4.5vw,56px); margin:0 0 .6rem; letter-spacing:-.02em; background: conic-gradient(from 180deg, var(--brand1), var(--brand2), var(--brand3), var(--brand1)); background-size:200% 200%; color:transparent; -webkit-background-clip:text; background-clip:text; animation:hueShift 8s ease-in-out infinite alternate; }
   @keyframes hueShift { to { background-position: 100% 0; } }
   .lead { color:#d0d7e2; max-width:70ch; margin:0 auto 1rem; font-size:clamp(14px,2vw,18px); }
@@ -125,6 +148,130 @@
     .skills {
         gap: 10px;
     }
+    /* --- Mobile (<= 900px): dùng layout dọc & fix hiển thị --- */
+    @media (max-width: 900px) {
+        html, body {
+            height: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .hpages {
+            display: block;
+            width: auto;
+            height: auto;
+            transform: none !important;
+        }
+
+
+        .page {
+            position: relative;
+            min-height: 100svh;
+            height: auto;
+            padding: 72px 16px;
+        }
+
+        .overlay {
+            padding: 0 16px;
+        }
+
+        .avatar {
+            width: 96px;
+            height: 96px;
+        }
+
+        h1 {
+            font-size: clamp(24px,7vw,36px);
+        }
+
+        /* Hero ảnh: tắt kenburns cho nhẹ máy/đỡ rung */
+        .img-cover {
+            transform: none;
+            animation: none;
+        }
+
+        /* About: 1 cột trên mobile */
+        .about-grid {
+            grid-template-columns: 1fr;
+        }
+
+        /* Cards: tự co 1–2 cột tùy màn hình */
+        .cards-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        /* Gallery: 1 cột dọc */
+        .grid-hero {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+        }
+
+        .top-left {
+            grid-row: auto;
+        }
+
+        /* UI phụ: ẩn trên mobile */
+        .progress, .dots {
+            display: none;
+        }
+
+        /* Nút & chip co giãn tốt hơn */
+        .chip {
+            font-size: 14px;
+            padding: .4rem .7rem;
+        }
+
+        .btn {
+            padding: .55rem .9rem;
+        }
+
+        .scroll-hint {
+            bottom: 12px;
+            font-size: 12px;
+        }
+    }
+    /* Nút mũi tên nổi hai bên */
+    .nav-arrow {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.1);
+        border: 1px solid rgba(255,255,255,.25);
+        color: #e5ecff;
+        font-size: 20px;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(0,0,0,.35);
+        backdrop-filter: blur(6px);
+        z-index: 20;
+        cursor: pointer;
+        transition: transform .15s ease, background .2s ease, border-color .2s ease;
+        display: none;
+    }
+.nav-arrow:hover{ transform: translateY(-50%) scale(1.06); background: rgba(0,212,255,.18); border-color: var(--brand2); }
+.nav-arrow.left{  left:10px; }
+.nav-arrow.right{ right:10px; }
+
+/* Dots nhỏ gọn hơn chút trên mobile */
+@media (max-width: 900px){
+  .dots{ right:10px; gap:8px; }
+  .dot{ width:9px; height:9px; }
+  .page{ padding:56px 16px; }          /* thêm khoảng trong để text không sát mép */
+  .about-grid{ grid-template-columns:1fr; }  /* 1 cột ở mobile */
+  .cards-grid{ grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); }
+  .img-cover{ animation:none; transform:none; }  /* nhẹ máy */
+}
+    @media (hover: none) and (pointer: coarse) {
+        .nav-arrow {
+            display: flex;
+        }
+        /* hiện trên thiết bị cảm ứng thô: đa số điện thoại */
+    }
 
   /* Reduced motion */
   @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important}}
@@ -139,10 +286,10 @@
         <section class="page hero">
             <div class="banner vignette" aria-hidden="true">
                 <!-- TODO: thay ảnh nền hero của bạn -->
-                <img class="img-cover" src="https://i.pinimg.com/originals/88/15/63/881563d6444b370fa4ceea0c3183bb4c.gif?q=80&w=1920&auto=format&fit=crop" alt="" />
+                <img class="img-cover" src="https://i.postimg.cc/FzWb08nc/bpxxqqvps4h91.gif?q=80&w=1920&auto=format&fit=crop" alt="" />
             </div>
             <div class="overlay reveal">
-                <img class="avatar" src="https://i.postimg.cc/wjqs3LPv/z6922506126890-bdfb8a4fd8d661068a09a86add20ce38.jpg?q=80&w=400&auto=format&fit=crop" alt="Ảnh đại diện" />
+                <img class="avatar" src="https://i.postimg.cc/Tw2WQQbY/555669110-2308032416321827-8019104651351356302-n.jpg?q=80&w=400&auto=format&fit=crop" alt="Ảnh đại diện" />
                 <div style="height:10px"></div>
                 <div class="chip" id="role">.NET / Backend Developer</div>
                 <h1 id="name">Zenith Hawking • Thanh Hai</h1>
@@ -308,11 +455,19 @@
         <button class="dot" data-i="2" aria-label="Trang 3"></button>
         <!--<button class="dot" data-i="3" aria-label="Trang 4"></button>-->
     </div>
+    <button class="nav-arrow left" aria-label="Previous">‹</button>
+    <button class="nav-arrow right" aria-label="Next">›</button>
 
     <script>
         (function () {
             const container = document.getElementById('hpages');
             const pages = Array.from(container.querySelectorAll('.page'));
+            const bar = document.getElementById('bar');
+            const dots = Array.from(document.querySelectorAll('.dot'));
+            const prevBtn = document.querySelector('.nav-arrow.left');
+            const nextBtn = document.querySelector('.nav-arrow.right');
+            const isDesktop = () => window.matchMedia('(min-width: 900px)').matches;
+
             let currentPage = 0;
 
             function go(idx) {
@@ -324,7 +479,16 @@
                 updateUI();
             }
 
-            // Wheel paging (đừng chặn khi lăn nhẹ)
+            function updateUI() {
+                if (bar) bar.style.width = (currentPage / (pages.length - 1)) * 100 + '%';
+                dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+                pages.forEach((p, i) => {
+                    const on = i === currentPage;
+                    p.querySelectorAll('.reveal').forEach(el => el.classList.toggle('in', on));
+                });
+            }
+
+            // WHEEL & KEYBOARD — chỉ desktop
             let wheelLock = false; const COOLDOWN = 450, THRESH = 8;
             function normDeltaY(e) {
                 if ('deltaY' in e) { const unit = (e.deltaMode === 1) ? 16 : (e.deltaMode === 2) ? innerHeight : 1; return e.deltaY * unit; }
@@ -333,8 +497,8 @@
                 return 0;
             }
             function onWheel(e) {
+                if (!isDesktop()) return;
                 if (e.shiftKey || e.ctrlKey) return;
-                // Đừng cản khi trỏ vào element tương tác
                 if (e.target.closest('a, button, input, textarea, select, label')) return;
                 const dy = normDeltaY(e);
                 if (Math.abs(dy) < THRESH) return;
@@ -349,28 +513,29 @@
             ['DOMMouseScroll', onWheel, { passive: false }]]
                 .forEach(([n, h, o]) => { window.addEventListener(n, h, o); container.addEventListener(n, h, o); });
 
-            // Keyboard
             window.addEventListener('keydown', e => {
+                if (!isDesktop()) return;
                 if (['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.key)) { e.preventDefault(); go(currentPage + 1); }
                 if (['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); go(currentPage - 1); }
             });
 
-            // Swipe/drag (mouse & touch) — KHÔNG chặn click
+            // SWIPE / DRAG — chạy cả desktop & mobile (không chặn click)
             let dragging = false, sx = 0, activePointerId = null, captured = false;
-            const THRESH_SWIPE = window.innerWidth * 0.12;   // kéo đủ xa mới lật trang
-            const THRESH_CAPTURE = 10;                       // kéo >10px mới capture
+            const THRESH_SWIPE = window.innerWidth * 0.12;
+            const THRESH_CAPTURE = 10;
 
             container.addEventListener('pointerdown', e => {
-                if (e.button !== 0) return; // chỉ chuột trái
-                if (e.target.closest('a, button, input, textarea, select, label')) return; // đừng đụng element tương tác
+                if (e.button !== 0 && e.pointerType === 'mouse') return;
+                if (e.target.closest('a, button, input, textarea, select, label')) return;
                 dragging = true; sx = e.clientX; activePointerId = e.pointerId; captured = false;
+                container.classList.add('is-dragging');
             });
 
             container.addEventListener('pointermove', e => {
                 if (!dragging || e.pointerId !== activePointerId || captured) return;
                 const dx = Math.abs(e.clientX - sx);
                 if (dx > THRESH_CAPTURE) {
-                    container.setPointerCapture(e.pointerId); // giờ mới capture vì người dùng kéo thật
+                    container.setPointerCapture(e.pointerId);
                     captured = true;
                 }
             });
@@ -379,31 +544,23 @@
                 if (!dragging || e.pointerId !== activePointerId) return;
                 const dx = e.clientX - sx;
                 dragging = false; activePointerId = null; captured = false;
+                container.classList.remove('is-dragging');
                 if (Math.abs(dx) > THRESH_SWIPE) {
                     go(currentPage + (dx < 0 ? 1 : -1));
                 }
-                // nếu không đủ ngưỡng, coi như click bình thường
             });
 
             container.addEventListener('pointercancel', () => {
                 dragging = false; activePointerId = null; captured = false;
+                container.classList.remove('is-dragging');
             });
 
-            // Progress + dots + reveal
-            const bar = document.getElementById('bar');
-            const dots = Array.from(document.querySelectorAll('.dot'));
+            // DOTS & ARROWS
             dots.forEach(d => d.addEventListener('click', () => { go(Number(d.dataset.i)); }));
+            if (prevBtn) prevBtn.addEventListener('click', () => go(currentPage - 1));
+            if (nextBtn) nextBtn.addEventListener('click', () => go(currentPage + 1));
 
-            function updateUI() {
-                if (bar) bar.style.width = (currentPage / (pages.length - 1)) * 100 + '%';
-                dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
-                pages.forEach((p, i) => {
-                    const on = i === currentPage;
-                    p.querySelectorAll('.reveal').forEach(el => el.classList.toggle('in', on));
-                });
-            }
-
-            // Điều hướng hash (#contact) sang đúng trang
+            // Hash (#contact) nếu có
             document.querySelectorAll('a[href^="#"]').forEach(a => {
                 a.addEventListener('click', e => {
                     const id = a.getAttribute('href').slice(1);
@@ -412,9 +569,19 @@
                 });
             });
 
-            updateUI(); // initial
+            // Hint
+            const hint = document.querySelector('.scroll-hint');
+            if (hint) hint.textContent = 'Swipe or use arrows to navigate';
+
+            // Init
+            container.style.transform = `translateX(0vw)`;
+            updateUI();
+
+            // Giữ transform đúng khi đổi chiều rộng
+            window.addEventListener('resize', () => {
+                container.style.transform = `translateX(-${currentPage * 100}vw)`;
+            });
         })();
     </script>
-
 </body>
 </html>
